@@ -4,7 +4,9 @@ var positions = [];
 var normals = [];
 var texcoords = [];
 
-var numVertices, modelXRotationRadians, modelYRotationRadians, targetModelXRotationRadians, targetModelYRotationRadians, targetModelXRotationRadians2, targetModelYRotationRadians2; 
+var numVertices, modelXRotationRadians, modelYRotationRadians, targetModelXRotationRadians, targetModelYRotationRadians, targetModelXRotationRadians2, targetModelYRotationRadians2;
+var diffuse, ambient, specular, emissive, u_lightDirection, ambientLight, colorLight, opacity;
+var isAnimating = true;
 
 const objs = ["Gear_BaseColor.obj", "Gear_blue.obj", "Gear_diffuse.obj", "Gear_foto_mia.obj", "Gear_glossiness.obj", "Gear_metallic.obj",
                 "Gear_normal.obj", "Gear_pink.obj", "Gear_red.obj", "Gear_roughness.obj", "Gear_specular.obj"];
@@ -46,14 +48,14 @@ function main() {
     // Set Texcoords
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texcoords), gl.STATIC_DRAW);
     
-    var diffuse = [0.7, 0.7, 0.7];          // diffuse light intensity
-    var ambient = [1.0, 1.0, 1.0];          // ambient reflection intensity
-    var specular = [0, 0, 0];      // specular highlight intensity
-    var emissive = [0.0, 0.0, 0.0];
-    var u_lightDirection = [0.5, -0.5, 0.5] // light direction
-    var ambientLight = [0.2, 0.2, 0.2];     // ambiental light intensity
-    var colorLight = [1.5, 1.5, 1.5];       // neutral light intesity
-    var opacity = 1.0;     
+    diffuse = [0.7, 0.7, 0.7];          // diffuse light intensity
+    ambient = [1.0, 1.0, 1.0];          // ambient reflection intensity
+    specular = [0, 0, 0];      // specular highlight intensity
+    emissive = [0.0, 0.0, 0.0];
+    u_lightDirection = [0.5, -0.5, 0.5] // light direction
+    ambientLight = [0.2, 0.2, 0.2];     // ambiental light intensity
+    colorLight = [1.5, 1.5, 1.5];       // neutral light intesity
+    opacity = 1.0;
 
     gl.uniform3fv(gl.getUniformLocation(program, "diffuse" ), diffuse );
     gl.uniform3fv(gl.getUniformLocation(program, "ambient" ), ambient); 
@@ -266,6 +268,7 @@ function main() {
         return d * Math.PI / 180;
     }
 
+    var then = 0;
     requestAnimationFrame(drawScene);
 
     // Aggiungi event listener per il trascinamento del mouse
@@ -325,18 +328,42 @@ function main() {
         rotateLeft();
     });
 
-    // Aggiungi questa parte del codice JavaScript
+    document.getElementById("startAnimation").addEventListener("click", function() {
+        var table = document.getElementById("movement");
+        table.classList.add("invisible");
+        isAnimating = true; 
+        requestAnimationFrame(drawSceneAnimate);
+    });
+
+    document.getElementById("stopAnimation").addEventListener("click", function() {
+        var table = document.getElementById("movement");
+        table.classList.remove("invisible");
+        isAnimating = false;
+    });
+
     document.addEventListener('keydown', function(event) {
-        if (event.key === 'ArrowUp' || event.keyCode == 87) {
-            rotateUp();
-        } else if (event.key === 'ArrowDown' || event.keyCode == 83) {
-            rotateDown();
-        } else if (event.key === 'ArrowRight' || event.keyCode == 68) {
-            rotateRight();
-        } else if (event.key === 'ArrowLeft' || event.keyCode == 65) {
-            rotateLeft();
-        } else if (event.keyCode == 32) {
-            loadObjs();
+        switch (event.key) {
+            case 'w':
+            case 'ArrowUp':
+                rotateUp();
+                break;
+            case 's':
+            case 'ArrowDown':
+                rotateDown();
+                break;
+            case 'ArrowRight':
+            case 'd':
+                rotateRight();
+                break;
+            case 'a':
+            case 'ArrowLeft':
+                rotateLeft();
+                break;
+            case ' ':
+                loadObjs();
+                break;
+            default:
+                break;
         }
     });
 
@@ -369,6 +396,7 @@ function main() {
     }
 
     function drawScene() {
+        enableMovementButton();
         // Tell WebGL how to convert from clip space to pixels
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
         gl.enable(gl.CULL_FACE);
@@ -401,6 +429,77 @@ function main() {
             console.error('WebGL error:', error);
     
         requestAnimationFrame(drawScene);
+    }
+
+    function drawSceneAnimate(time){
+        if (!isAnimating)
+            return;
+
+        disableMovementButton();
+
+        // convert to seconds
+        time *= 0.001;
+        // Subtract the previous time from the current time
+        var deltaTime = time - then;
+        // Remember the current time for the next frame.
+        then = time;
+
+        // Tell WebGL how to convert from clip space to pixels
+        gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+
+        //gl.enable(gl.CULL_FACE);
+        gl.enable(gl.DEPTH_TEST);
+
+        // Animate the rotation
+        modelXRotationRadians += -0.7 * deltaTime;
+        targetModelXRotationRadians += -0.7 * deltaTime;
+        targetModelXRotationRadians2 += -0.7 * deltaTime;
+        modelYRotationRadians -= 0.7 * deltaTime; // Ruota verso sinistra (in senso orario) per la prima mesh
+        targetModelYRotationRadians += -0.7 * deltaTime; // Ruota verso destra (in senso antiorario) per la seconda mesh
+        targetModelYRotationRadians2 += -0.7 * deltaTime; // Ruota verso destra (in senso antiorario) per la seconda mesh
+
+        // Clear the canvas AND the depth buffer.
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        
+        // Clear the canvas AND the depth buffer.
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    
+        // Draw the first geometry.
+        var matrix1 = m4.translate(m4.identity(), -1.0, 0.3, 0.5); // Trasla la prima mesh a sinistra
+        matrix1 = m4.xRotate(matrix1, modelXRotationRadians);
+        matrix1 = m4.yRotate(matrix1, modelYRotationRadians);
+        gl.uniformMatrix4fv(matrixLocation, false, matrix1);
+        gl.drawArrays(gl.TRIANGLES, 0, numVertices);
+    
+        var modelMatrix2 = m4.identity();
+        modelMatrix2 = m4.translate(modelMatrix2, 0.9, 0.3, 0.5);  // Translate the second element to the right
+        modelMatrix2 = m4.xRotate(modelMatrix2, targetModelXRotationRadians2); // Apply rotation to the second mesh
+        modelMatrix2 = m4.yRotate(modelMatrix2, targetModelYRotationRadians2); // Apply rotation to the second mesh
+        gl.uniformMatrix4fv(matrixLocation, false, modelMatrix2);
+        gl.drawArrays(gl.TRIANGLES, 0, numVertices);
+    
+        // Check for WebGL errors
+        var error = gl.getError();
+        if (error !== gl.NO_ERROR)
+            console.error('WebGL error:', error);
+    
+        requestAnimationFrame(drawSceneAnimate);
+    }
+
+    function disableMovementButton(){
+        var up = document.getElementById("rotateUpButton");
+        up.disabled = "disabled";
+        // document.getElementById("rotateUpButton").disabled = true;
+        document.getElementById("rotateDownButton").disabled = true;
+        document.getElementById("rotateRightButton").disabled = true;
+        document.getElementById("rotateLeftButton").disabled = true;
+    }
+
+    function enableMovementButton(){
+        document.getElementById("rotateUpButton").disabled = false;
+        document.getElementById("rotateDownButton").disabled = false;
+        document.getElementById("rotateRightButton").disabled = false;
+        document.getElementById("rotateLeftButton").disabled = false;
     }
 
     function loadObjs() {

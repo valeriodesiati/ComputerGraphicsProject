@@ -1,48 +1,70 @@
 body {
-	margin: 0;
-	padding: 0;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	height: 100vh;
-	flex-direction: column;
-	background-color: rgb(240, 240, 240);
-	font-family: 'Open Sans', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: rgb(240, 240, 240);
+    font-family: 'Open Sans', sans-serif;
+    flex-direction: column;
 }
 
-canvas {
-	height: 700;
-	width: 900;
-	margin-bottom: 20px;
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
 }
 
-#buttonContainer {
-	position: absolute;
-	right: 0;
-	top: 50%;
-	transform: translateY(-50%);
+#buttonContainerLeft,
+#buttonContainerRight {
+    display: flex;
+    flex-direction: column;
+    width: 20%;
+}
+
+#buttonContainerLeft {
+    align-items: flex-start;
+}
+
+#buttonContainerRight {
+    align-items: flex-end;
+}
+
+#canvasContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60%;
 }
 
 table {
-	border-collapse: collapse;
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.invisible {
+    display: none;
 }
 
 th,
 td {
-	padding: 10px;
-	text-align: center;
+    padding: 10px;
+    text-align: center;
 }
 
 button {
-	margin-left: 10px;
-	font-family: 'Open Sans', sans-serif;
+    margin-left: 10px;
+    font-family: 'Open Sans', sans-serif;
 }
 
 .open-sans-font {
-  font-family: "Open Sans", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 300;
-  font-style: normal;
-  font-variation-settings:
-    "wdth" 100;
+    font-family: "Open Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+    font-variation-settings:
+        "wdth" 100;
 }
