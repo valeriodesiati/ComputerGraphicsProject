@@ -1,0 +1,48 @@
+body {
+	margin: 0;
+	padding: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+	flex-direction: column;
+	background-color: rgb(240, 240, 240);
+	font-family: 'Open Sans', sans-serif;
+}
+
+canvas {
+	height: 700;
+	width: 900;
+	margin-bottom: 20px;
+}
+
+#buttonContainer {
+	position: absolute;
+	right: 0;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+table {
+	border-collapse: collapse;
+}
+
+th,
+td {
+	padding: 10px;
+	text-align: center;
+}
+
+button {
+	margin-left: 10px;
+	font-family: 'Open Sans', sans-serif;
+}
+
+.open-sans-font {
+  font-family: "Open Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+}
