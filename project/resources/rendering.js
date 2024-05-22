@@ -258,22 +258,11 @@ function main() {
 
     requestAnimationFrame(drawScene);
 
-    // Aggiungi event listener per il trascinamento del mouse
     var isDragging = false;
-    var lastMouseX, lastMouseY;
+    var lastMouseX = 0;
+    var lastMouseY = 0;
 
-    canvas.addEventListener("mousedown", function(event) {
-        isDragging = true;
-        lastMouseX = event.clientX;
-        lastMouseY = event.clientY;
-    });
-
-    // Aggiungi variabili per memorizzare la rotazione del mouse
-    targetModelXRotationRadians = targetModelXRotationRadians2 = modelXRotationRadians;
-    targetModelYRotationRadians = targetModelYRotationRadians2 = modelYRotationRadians;
-
-    // Aggiorna il codice all'interno dell'evento mousemove
-    canvas.addEventListener("mousemove", function(event) {
+    function onMouseMove(event) {
         if (isDragging) {
             var deltaX = event.clientX - lastMouseX;
             var deltaY = event.clientY - lastMouseY;
@@ -289,11 +278,88 @@ function main() {
 
             drawScene();
         }
+    }
+
+    function onTouchMove(event) {
+        if (isDragging) {
+            var touch = event.touches[0];
+            var deltaX = touch.clientX - lastMouseX;
+            var deltaY = touch.clientY - lastMouseY;
+
+            // Interpolazione della rotazione del cubo in base ai movimenti del touch
+            targetModelXRotationRadians -= deltaY * 0.01;
+            targetModelYRotationRadians += deltaX * 0.01;
+            targetModelXRotationRadians2 -= deltaY * 0.01;
+            targetModelYRotationRadians2 -= deltaX * 0.01;
+
+            lastMouseX = touch.clientX;
+            lastMouseY = touch.clientY;
+
+            drawScene();
+        }
+    }
+
+    canvas.addEventListener("mousemove", onMouseMove);
+    canvas.addEventListener("touchmove", onTouchMove);
+
+    canvas.addEventListener("mousedown", function(event) {
+        isDragging = true;
+        lastMouseX = event.clientX;
+        lastMouseY = event.clientY;
     });
 
-    canvas.addEventListener("mouseup", function() {
+    canvas.addEventListener("touchstart", function(event) {
+        isDragging = true;
+        var touch = event.touches[0];
+        lastMouseX = touch.clientX;
+        lastMouseY = touch.clientY;
+    });
+
+    canvas.addEventListener("mouseup", function(event) {
         isDragging = false;
     });
+
+    canvas.addEventListener("touchend", function(event) {
+        isDragging = false;
+    });
+
+
+    // // Aggiungi event listener per il trascinamento del mouse
+    // var isDragging = false;
+    // var lastMouseX, lastMouseY;
+
+    // canvas.addEventListener("mousedown", function(event) {
+    //     isDragging = true;
+    //     lastMouseX = event.clientX;
+    //     lastMouseY = event.clientY;
+    // });
+
+    // Aggiungi variabili per memorizzare la rotazione del mouse
+    targetModelXRotationRadians = targetModelXRotationRadians2 = modelXRotationRadians;
+    targetModelYRotationRadians = targetModelYRotationRadians2 = modelYRotationRadians;
+
+    // // Aggiorna il codice all'interno dell'evento mousemove
+    // canvas.addEventListener("mousemove", function(event) {
+    //     if (isDragging) {
+    //         var deltaX = event.clientX - lastMouseX;
+    //         var deltaY = event.clientY - lastMouseY;
+
+    //         // Interpolazione della rotazione del cubo in base ai movimenti del mouse
+    //         targetModelXRotationRadians -= deltaY * 0.01;
+    //         targetModelYRotationRadians += deltaX * 0.01;
+    //         targetModelXRotationRadians2 -= deltaY * 0.01;
+    //         targetModelYRotationRadians2 -= deltaX * 0.01;
+
+    //         lastMouseX = event.clientX;
+    //         lastMouseY = event.clientY;
+
+    //         drawScene();
+    //     }
+    // });
+
+    // canvas.addEventListener("mouseup", function() {
+    //     isDragging = false;
+    // });
 
     document.getElementById("randomTexture").addEventListener("click", function () {
         loadObjs();
