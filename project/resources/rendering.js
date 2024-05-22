@@ -364,7 +364,7 @@ function main() {
     });
 
     //Se il mouse ha il focus sulle mesh ed è premuto
-    canvas.addEventListener("mousemove", function onMouseMove(event) {
+    canvas.addEventListener("mousemove", function(event) {
         //Se si sta muovendo
         if (isDragging) {
             var deltaX = event.clientX - lastMouseX;
@@ -400,11 +400,12 @@ function main() {
     });
     
     //Se il si muove il dito tramite touchscreen
-    canvas.addEventListener("touchmove", function onTouchMove(event) {
+    canvas.addEventListener("touchmove", function(event) {
         //Se si sta muovendo
         if (isDragging) {
-            var deltaX = event.clientX - lastMouseX;
-            var deltaY = event.clientY - lastMouseY;
+            var touch = event.touches[0];
+            var deltaX = touch.clientX - lastMouseX;
+            var deltaY = touch.clientY - lastMouseY;
 
             //Interpolazione della rotazione del cubo in base ai movimenti del mouse
             //Si vuole che gli ingranaggi appaiano come se stessero ruotando
@@ -413,8 +414,8 @@ function main() {
             targetModelXRotationRadians2 -= deltaY * 0.01;
             targetModelYRotationRadians2 -= deltaX * 0.01;
 
-            lastMouseX = event.clientX;
-            lastMouseY = event.clientY;
+            lastMouseX = touch.clientX;
+            lastMouseY = touch.clientY;
 
             drawScene();
         }
