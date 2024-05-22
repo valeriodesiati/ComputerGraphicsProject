@@ -7,9 +7,11 @@ var texcoords = [];
 var numVertices, modelXRotationRadians, modelYRotationRadians, targetModelXRotationRadians, targetModelYRotationRadians, targetModelXRotationRadians2, targetModelYRotationRadians2;
 var diffuse, ambient, specular, emissive, u_lightDirection, ambientLight, colorLight, opacity;
 var isAnimating = true;
+var then = 0;
 
 const objs = ["Gear_BaseColor.obj", "Gear_blue.obj", "Gear_diffuse.obj", "Gear_foto_mia.obj", "Gear_glossiness.obj", "Gear_metallic.obj",
                 "Gear_normal.obj", "Gear_pink.obj", "Gear_red.obj", "Gear_roughness.obj", "Gear_specular.obj"];
+                
 function main() {
     var canvas = document.getElementById("canvas");
     var gl = canvas.getContext("webgl");
@@ -72,7 +74,6 @@ function main() {
         var value = parseFloat(diffuseSlider.value);
         diffuse = [value, value, value];
         gl.uniform3fv(gl.getUniformLocation(program, "diffuse"), diffuse);
-        drawScene();
     });
 
     var specularSlider = document.getElementById("specularSlider");
@@ -80,7 +81,6 @@ function main() {
         var value = parseFloat(specularSlider.value);
         specular = [value, value, value];
         gl.uniform3fv(gl.getUniformLocation(program, "specular"), specular);
-        drawScene();
     });
 
     var emissiveLightSlider = document.getElementById("emissiveLightSlider");
@@ -88,7 +88,6 @@ function main() {
         var value = parseFloat(emissiveLightSlider.value);
         emissive = [value, value, value];
         gl.uniform3fv(gl.getUniformLocation(program, "emissive"), emissive);
-        drawScene();
     });
 
     var opacitySlider = document.getElementById("opacitySlider");
@@ -96,7 +95,6 @@ function main() {
         var value = parseFloat(opacitySlider.value);
         opacity = value;
         gl.uniform1f(gl.getUniformLocation(program, "opacity"), opacity);   
-        drawScene();
     });
 
     var lightDirectionSlider = document.getElementById("lightDirectionSlider");
@@ -104,7 +102,6 @@ function main() {
         var value = parseFloat(lightDirectionSlider.value);
         u_lightDirection = [value, value, value];
         gl.uniform3fv(gl.getUniformLocation(program, "u_lightDirection"), u_lightDirection);
-        drawScene();
     });
 
     var resetLights = document.getElementById("resetLights");
@@ -130,7 +127,6 @@ function main() {
         diffuseSlider.value = 0.7;
         emissiveLightSlider.value = 0.0;
         opacitySlider.value = 1.0;
-        drawScene(); // Ridisegna la scena con la nuova posizione della telecamera
     });
 
     // Turn on the position attribute
@@ -182,33 +178,27 @@ function main() {
     cameraPositionSliderX.addEventListener("input", function() {
         var value = parseFloat(cameraPositionSliderX.value);
         cameraPosition[0] = value; // Imposta la posizione X della telecamera
-        // Aggiorna la matrice della vista con la nuova posizione della telecamera
         cameraMatrix = m4.lookAt(cameraPosition, target, up);
         viewMatrix = m4.inverse(cameraMatrix);
         gl.uniformMatrix4fv(viewMatrixLocation, false, viewMatrix);
-        drawScene(); // Ridisegna la scena con la nuova posizione della telecamera
     });
 
     var cameraPositionSliderY = document.getElementById("cameraPositionSliderY");
     cameraPositionSliderY.addEventListener("input", function() {
         var value = parseFloat(cameraPositionSliderY.value);
         cameraPosition[1] = value; // Imposta la posizione Y della telecamera
-        // Aggiorna la matrice della vista con la nuova posizione della telecamera
         cameraMatrix = m4.lookAt(cameraPosition, target, up);
         viewMatrix = m4.inverse(cameraMatrix);
         gl.uniformMatrix4fv(viewMatrixLocation, false, viewMatrix);
-        drawScene(); // Ridisegna la scena con la nuova posizione della telecamera
     });
     
     var cameraPositionSliderZ = document.getElementById("cameraPositionSliderZ");
     cameraPositionSliderZ.addEventListener("input", function() {
         var value = parseFloat(cameraPositionSliderZ.value);
         cameraPosition[2] = value; // Imposta la posizione Z della telecamera
-        // Aggiorna la matrice della vista con la nuova posizione della telecamera
         cameraMatrix = m4.lookAt(cameraPosition, target, up);
         viewMatrix = m4.inverse(cameraMatrix);
         gl.uniformMatrix4fv(viewMatrixLocation, false, viewMatrix);
-        drawScene(); // Ridisegna la scena con la nuova posizione della telecamera
     });
 
     var resetCamera = document.getElementById("resetCamera");
@@ -217,7 +207,6 @@ function main() {
         cameraPositionSliderZ.value = 2;
         var duration = 500; // Decreased duration for faster animation
         var numFrames = 30; // Number of frames for the animation
-        var increment = 1.0 / numFrames;
 
         var targetCameraPosition = [4.5, 4.5, 2]; // New camera position after reset
         var startCameraPosition = cameraPosition.slice(); // Current camera position
@@ -241,7 +230,6 @@ function main() {
             viewMatrix = m4.inverse(cameraMatrix);
             gl.uniformMatrix4fv(viewMatrixLocation, false, viewMatrix);
 
-            drawScene(); // Redraw the scene with the interpolated camera position
         }, duration / numFrames);
     });
 
@@ -268,7 +256,6 @@ function main() {
         return d * Math.PI / 180;
     }
 
-    var then = 0;
     requestAnimationFrame(drawScene);
 
     // Aggiungi event listener per il trascinamento del mouse
@@ -295,7 +282,7 @@ function main() {
             targetModelXRotationRadians -= deltaY * 0.01;
             targetModelYRotationRadians += deltaX * 0.01;
             targetModelXRotationRadians2 -= deltaY * 0.01;
-            targetModelYRotationRadians2 -= deltaY * 0.01;
+            targetModelYRotationRadians2 -= deltaX * 0.01;
 
             lastMouseX = event.clientX;
             lastMouseY = event.clientY;
@@ -396,7 +383,6 @@ function main() {
     }
 
     function drawScene() {
-        enableMovementButton();
         // Tell WebGL how to convert from clip space to pixels
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
         gl.enable(gl.CULL_FACE);
@@ -435,8 +421,6 @@ function main() {
         if (!isAnimating)
             return;
 
-        disableMovementButton();
-
         // convert to seconds
         time *= 0.001;
         // Subtract the previous time from the current time
@@ -447,7 +431,7 @@ function main() {
         // Tell WebGL how to convert from clip space to pixels
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
-        //gl.enable(gl.CULL_FACE);
+        gl.enable(gl.CULL_FACE);
         gl.enable(gl.DEPTH_TEST);
 
         // Animate the rotation
@@ -456,7 +440,7 @@ function main() {
         targetModelXRotationRadians2 += -0.7 * deltaTime;
         modelYRotationRadians -= 0.7 * deltaTime; // Ruota verso sinistra (in senso orario) per la prima mesh
         targetModelYRotationRadians += -0.7 * deltaTime; // Ruota verso destra (in senso antiorario) per la seconda mesh
-        targetModelYRotationRadians2 += -0.7 * deltaTime; // Ruota verso destra (in senso antiorario) per la seconda mesh
+        targetModelYRotationRadians2 -= -0.7 * deltaTime; // Ruota verso destra (in senso antiorario) per la seconda mesh
 
         // Clear the canvas AND the depth buffer.
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -484,22 +468,6 @@ function main() {
             console.error('WebGL error:', error);
     
         requestAnimationFrame(drawSceneAnimate);
-    }
-
-    function disableMovementButton(){
-        var up = document.getElementById("rotateUpButton");
-        up.disabled = "disabled";
-        // document.getElementById("rotateUpButton").disabled = true;
-        document.getElementById("rotateDownButton").disabled = true;
-        document.getElementById("rotateRightButton").disabled = true;
-        document.getElementById("rotateLeftButton").disabled = true;
-    }
-
-    function enableMovementButton(){
-        document.getElementById("rotateUpButton").disabled = false;
-        document.getElementById("rotateDownButton").disabled = false;
-        document.getElementById("rotateRightButton").disabled = false;
-        document.getElementById("rotateLeftButton").disabled = false;
     }
 
     function loadObjs() {
