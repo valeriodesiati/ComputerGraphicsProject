@@ -108,6 +108,27 @@
                         <td></td>
                     </tr>
                 </table>
+
+
+                <table id="canvasMove">
+                    <tr>
+                        <td></td>
+                        <td><b>Scegli cosa muovere con le frecce della tastiera o WASD:</b></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <form id="moveChoose">
+                                <input type="radio" name="option" id="moveGears" checked>Muovi ingranaggi <br>
+                                <input type="radio" name="option" id="moveCamera">Muovi camera
+                            </form>
+                        </td>
+                        <td></td>
+                    </tr>
+                </table>
+
+
             </div>
 
             <div id="canvasContainer">
@@ -233,12 +254,11 @@
             vec3 diffuseColor = u_ambientLight + diffuseFactor * u_colorLight.rgb * effectiveDiffuse;
             vec3 specularColor = specular * pow(specularLight, shininess);
 
-            float shadow = calculateShadow(v_shadowCoord);
             
             gl_FragColor = vec4(
                 emissive +
                 ambient * u_ambientLight +
-                diffuseColor * shadow +
+                diffuseColor  +
                 specularColor,
                 effectiveOpacity
             );

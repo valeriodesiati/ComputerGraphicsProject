@@ -349,45 +349,44 @@ function main() {
     //nella scena, creando l'effetto di animazione.
     requestAnimationFrame(drawScene);
 
-    //Variabili per la gestione del movimento tramite touchscreen o mouse
-    var isDragging = false;
-    var lastMouseX = 0;
-    var lastMouseY = 0;
+    // Variabili per la gestione del movimento tramite touchscreen o mouse
+var isDragging = false;
+var lastMouseX = 0;
+var lastMouseY = 0;
 
-    //Se il mouse è cliccato
-    canvas.addEventListener("mousedown", function(event) {
-        isDragging = true;
-        
-        //Si salvano le coordinate
+// Se il mouse è cliccato
+canvas.addEventListener("mousedown", function(event) {
+    isDragging = true;
+    
+    // Si salvano le coordinate
+    lastMouseX = event.clientX;
+    lastMouseY = event.clientY;
+});
+
+// Se il mouse ha il focus sulle mesh ed è premuto
+canvas.addEventListener("mousemove", function(event) {
+    if (isDragging) {
+        var deltaX = event.clientX - lastMouseX;
+        var deltaY = event.clientY - lastMouseY;
+
+        // Interpolazione della rotazione degli ingranaggi in base ai movimenti del mouse
+        targetModelXRotationRadians -= deltaY * 0.01;
+        targetModelYRotationRadians += deltaX * 0.01;
+        targetModelXRotationRadians2 -= deltaY * 0.01;
+        targetModelYRotationRadians2 -= deltaX * 0.01;
+
         lastMouseX = event.clientX;
         lastMouseY = event.clientY;
-    });
 
-    //Se il mouse ha il focus sulle mesh ed è premuto
-    canvas.addEventListener("mousemove", function(event) {
-        //Se si sta muovendo
-        if (isDragging) {
-            var deltaX = event.clientX - lastMouseX;
-            var deltaY = event.clientY - lastMouseY;
+        drawScene();
+    }
+});
 
-            //Interpolazione della rotazione del cubo in base ai movimenti del mouse
-            //Si vuole che gli ingranaggi appaiano come se stessero ruotando
-            targetModelXRotationRadians -= deltaY * 0.01;
-            targetModelYRotationRadians += deltaX * 0.01;
-            targetModelXRotationRadians2 -= deltaY * 0.01;
-            targetModelYRotationRadians2 -= deltaX * 0.01;
+// Se si solleva il mouse non c'è più movimento
+canvas.addEventListener("mouseup", function(event) {
+    isDragging = false;
+});
 
-            lastMouseX = event.clientX;
-            lastMouseY = event.clientY;
-
-            drawScene();
-        }
-    });
-
-    //Se si solleva il mouse non c'è più movimento
-    canvas.addEventListener("mouseup", function(event) {
-        isDragging = false;
-    });
     
     //Inizio tocco con touchscreen
     canvas.addEventListener("touchstart", function(event) {
@@ -478,19 +477,33 @@ function main() {
         switch (event.key) {
             case 'w':
             case 'ArrowUp':
-                rotateUp();
+                if (document.getElementById('moveGears').checked)
+                    rotateUp();
+                if (document.getElementById('moveCamera').checked)
+                    rotateCameraUp();
                 break;
             case 's':
             case 'ArrowDown':
-                rotateDown();
+                if (document.getElementById('moveGears').checked)
+                    rotateDown();
+                if (document.getElementById('moveCamera').checked)
+                    rotateCameraDown();
                 break;
             case 'ArrowRight':
             case 'd':
-                rotateRight();
+                if (document.getElementById('moveGears').checked)
+                    rotateRight();
+                if (document.getElementById('moveCamera').checked)
+                    if (document.getElementById('moveCamera').checked)
+                        rotateCameraRight();
                 break;
             case 'a':
             case 'ArrowLeft':
-                rotateLeft();
+                if (document.getElementById('moveGears').checked)
+                    rotateLeft();
+                if (document.getElementById('moveCamera').checked)
+                    if (document.getElementById('moveCamera').checked)
+                        rotateCameraLeft();
                 break;
             case ' ':
                 loadObjs();
@@ -530,6 +543,78 @@ function main() {
         targetModelYRotationRadians2 += Math.PI / 22.5; //Incrementa la rotazione Y per la seconda mesh
         console.log('rotateLeftButton');
         drawScene(); //Aggiorna la scena con la nuova rotazione
+    }
+
+    function rotateCameraUp() {
+        //Se è arrivato al limite non fare nulla
+        if(cameraPosition[1] == 10)
+            return;
+
+        //Altrimenti si incrementa la coordinata Y
+        cameraPosition[1] += 0.5;
+        cameraMatrix = m4.lookAt(cameraPosition, target, up);
+        viewMatrix = m4.inverse(cameraMatrix);
+        gl.uniformMatrix4fv(viewMatrixLocation, false, viewMatrix);
+        drawScene(); //Aggiorna la scena con la nuova rotazione
+
+        //Si regolano gli slider di conseguenza
+        cameraPositionSliderX.value = cameraPosition[0];
+        cameraPositionSliderY.value = cameraPosition[1];
+        cameraPositionSliderZ.value = cameraPosition[2];
+    }
+    
+    function rotateCameraDown() {
+        //Se è arrivato al limite non fare nulla
+        if(cameraPosition[1] == -10)
+            return;
+
+        //Altrimenti si decrementa la coordinata Y
+        cameraPosition[1] -= 0.5;
+        cameraMatrix = m4.lookAt(cameraPosition, target, up);
+        viewMatrix = m4.inverse(cameraMatrix);
+        gl.uniformMatrix4fv(viewMatrixLocation, false, viewMatrix);
+        drawScene(); //Aggiorna la scena con la nuova rotazione
+
+        //Si regolano gli slider di conseguenza
+        cameraPositionSliderX.value = cameraPosition[0];
+        cameraPositionSliderY.value = cameraPosition[1];
+        cameraPositionSliderZ.value = cameraPosition[2];
+    }
+    
+    function rotateCameraRight() {
+        //Se è arrivato al limite non fare nulla
+        if(cameraPosition[0] == 10)
+            return;
+
+        //Altrimenti si incrementa la coordinata X
+        cameraPosition[0] += 0.5;
+        cameraMatrix = m4.lookAt(cameraPosition, target, up);
+        viewMatrix = m4.inverse(cameraMatrix);
+        gl.uniformMatrix4fv(viewMatrixLocation, false, viewMatrix);
+        drawScene(); //Aggiorna la scena con la nuova rotazione
+
+        //Si regolano gli slider di conseguenza
+        cameraPositionSliderX.value = cameraPosition[0];
+        cameraPositionSliderY.value = cameraPosition[1];
+        cameraPositionSliderZ.value = cameraPosition[2];
+    }
+    
+    function rotateCameraLeft() {
+        //Se è arrivato al limite non fare nulla
+        if(cameraPosition[0] == -10)
+            return;
+
+        //Altrimenti si incrementa la coordinata X
+        cameraPosition[0] -= 0.5;
+        cameraMatrix = m4.lookAt(cameraPosition, target, up);
+        viewMatrix = m4.inverse(cameraMatrix);
+        gl.uniformMatrix4fv(viewMatrixLocation, false, viewMatrix);
+        drawScene(); //Aggiorna la scena con la nuova rotazione
+    
+        //Si regolano gli slider di conseguenza
+        cameraPositionSliderX.value = cameraPosition[0];
+        cameraPositionSliderY.value = cameraPosition[1];
+        cameraPositionSliderZ.value = cameraPosition[2];
     }
 
     //Funzione per disegnare la scena statica
