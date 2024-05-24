@@ -93,7 +93,7 @@ function main() {
     ambient = [1.0, 1.0, 1.0];          //Luce ambientale della scena
     specular = [0, 0, 0];               //Luce speculare riflessa in una posizione specifica
     emissive = [0.0, 0.0, 0.0];         //Emissione di luce propria
-    u_lightDirection = [0.5, -0.5, 0.5] //Direzione della luce
+    u_lightDirection = [0.5, -0.5, 0.5]; //Direzione della luce
     ambientLight = [0.2, 0.2, 0.2];     //Intensità complessiva della luce ambientale
     colorLight = [1.5, 1.5, 1.5];       //Luce neutrale
     opacity = 1.0;                      //Opacità
@@ -350,42 +350,42 @@ function main() {
     requestAnimationFrame(drawScene);
 
     // Variabili per la gestione del movimento tramite touchscreen o mouse
-var isDragging = false;
-var lastMouseX = 0;
-var lastMouseY = 0;
+    var isDragging = false;
+    var lastMouseX = 0;
+    var lastMouseY = 0;
 
-// Se il mouse è cliccato
-canvas.addEventListener("mousedown", function(event) {
-    isDragging = true;
-    
-    // Si salvano le coordinate
-    lastMouseX = event.clientX;
-    lastMouseY = event.clientY;
-});
-
-// Se il mouse ha il focus sulle mesh ed è premuto
-canvas.addEventListener("mousemove", function(event) {
-    if (isDragging) {
-        var deltaX = event.clientX - lastMouseX;
-        var deltaY = event.clientY - lastMouseY;
-
-        // Interpolazione della rotazione degli ingranaggi in base ai movimenti del mouse
-        targetModelXRotationRadians -= deltaY * 0.01;
-        targetModelYRotationRadians += deltaX * 0.01;
-        targetModelXRotationRadians2 -= deltaY * 0.01;
-        targetModelYRotationRadians2 -= deltaX * 0.01;
-
+    // Se il mouse è cliccato
+    canvas.addEventListener("mousedown", function(event) {
+        isDragging = true;
+        
+        // Si salvano le coordinate
         lastMouseX = event.clientX;
         lastMouseY = event.clientY;
+    });
 
-        drawScene();
-    }
-});
+    // Se il mouse ha il focus sulle mesh ed è premuto
+    canvas.addEventListener("mousemove", function(event) {
+        if (isDragging) {
+            var deltaX = event.clientX - lastMouseX;
+            var deltaY = event.clientY - lastMouseY;
 
-// Se si solleva il mouse non c'è più movimento
-canvas.addEventListener("mouseup", function(event) {
-    isDragging = false;
-});
+            // Interpolazione della rotazione degli ingranaggi in base ai movimenti del mouse
+            targetModelXRotationRadians -= deltaY * 0.01;
+            targetModelYRotationRadians += deltaX * 0.01;
+            targetModelXRotationRadians2 -= deltaY * 0.01;
+            targetModelYRotationRadians2 -= deltaX * 0.01;
+
+            lastMouseX = event.clientX;
+            lastMouseY = event.clientY;
+
+            drawScene();
+        }
+    });
+
+    // Se si solleva il mouse non c'è più movimento
+    canvas.addEventListener("mouseup", function(event) {
+        isDragging = false;
+    });
 
     
     //Inizio tocco con touchscreen
@@ -731,21 +731,21 @@ canvas.addEventListener("mouseup", function(event) {
         requestAnimationFrame(drawSceneAnimate);
     }
 
-    //Funzione per il caricamento degli OBJ
-    function loadObjs() {
-        //Array di mesh
-        var mesh = [];
+        //Funzione per il caricamento degli OBJ
+        function loadObjs() {
+            //Array di mesh
+            var mesh = [];
 
-        //Si calcola indice random
-        var index = Math.floor(Math.random() * objs.length);
-        
-        //Si inseriscono all'interno dell'array due mesh
-        mesh.push({ sourceMesh: 'data/' + objs[index] });
-        mesh.push({ sourceMesh: 'data/' + objs[index] });
-        LoadMesh(gl, mesh[0]);
-        LoadMesh(gl, mesh[1]);
-        console.log(objs[index]);
-    }
+            //Si calcola indice random
+            var index = Math.floor(Math.random() * objs.length);
+            
+            //Si inseriscono all'interno dell'array due mesh
+            mesh.push({ sourceMesh: 'data/' + objs[index] });
+            mesh.push({ sourceMesh: 'data/' + objs[index] });
+            LoadMesh(gl, mesh[0]);
+            LoadMesh(gl, mesh[1]);
+            console.log(objs[index]);
+        }
 }
 
 main();
