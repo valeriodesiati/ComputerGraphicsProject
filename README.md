@@ -55,8 +55,8 @@ Sviluppare una "3D-WebApp" usando WebGL (HTML5, CSS e contesto webgl), linguaggi
 <section id="interfaccia">
 
 ## Interfaccia
-
-![](demo/scena_iniziale.png) Al centro della scena si trovano due oggetti di tipo mesh (file OBJ), adeguatamente texturizzati. L'applicazione delle texture è stata effettuata tramite Blender 4.0\. Gli oggetti sono stati texturizzati con 11 texture diverse (10 tra texture a tinta unita e texture che richiamano lo stile di alcuni materiali e 1 foto dell'autore).
+![alt text]([http://url/to/img.png](https://github.com/valeriodesiati/ComputerGraphicsProject/blob/main/doc/demo/scena_iniziale.png))
+Al centro della scena si trovano due oggetti di tipo mesh (file OBJ), adeguatamente texturizzati. L'applicazione delle texture è stata effettuata tramite Blender 4.0\. Gli oggetti sono stati texturizzati con 11 texture diverse (10 tra texture a tinta unita e texture che richiamano lo stile di alcuni materiali e 1 foto dell'autore).
 
 ### Controlli a Disposizione dell'Utente
 
@@ -77,8 +77,7 @@ Continuando ad esplorare la scena si trovano tutti i controlli a disposizione de
 *   Pulsante per iniziare e terminare un'animazione delle mesh.
 
 Video demo interfaccia:  
-
-<video controls="" width="100%"><source src="demo/demo.mp4" type="video/mp4"> Il tuo browser non supporta il tag video.</video>   
+![alt text]([http://url/to/img.png](https://github.com/valeriodesiati/ComputerGraphicsProject/blob/main/doc/demo/demo.mp4))
 
 Notare, come si può evincere anche dal codice sorgente, che l'interfaccia risulta responsive e user - friendly anche in ambiente mobile, è infatti prevista una gestione degli eventi anche su touchscreen.</section>
 
