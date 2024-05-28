@@ -77,7 +77,7 @@ Continuando ad esplorare la scena si trovano tutti i controlli a disposizione de
 *   Pulsante per iniziare e terminare un'animazione delle mesh.
 
 Video demo interfaccia:  
-![Alt text](https://github.com/valeriodesiati/ComputerGraphicsProject/blob/main/doc/demo/demo.mp4 "Video demo")
+![Video demo](https://github.com/valeriodesiati/ComputerGraphicsProject/blob/main/doc/demo/demo.mp4 "Video demo")
 
 Notare, come si può evincere anche dal codice sorgente, che l'interfaccia risulta responsive e user - friendly anche in ambiente mobile, è infatti prevista una gestione degli eventi anche su touchscreen.</section>
 
