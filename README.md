@@ -55,7 +55,7 @@ Sviluppare una "3D-WebApp" usando WebGL (HTML5, CSS e contesto webgl), linguaggi
 <section id="interfaccia">
 
 ## Interfaccia
-![Alt text]([http://url/to/img.png](https://github.com/valeriodesiati/ComputerGraphicsProject/blob/main/doc/demo/scena_iniziale.png) "Scena iniziale")
+![Alt text](https://github.com/valeriodesiati/ComputerGraphicsProject/blob/main/doc/demo/scena_iniziale.png "Scena iniziale")
 Al centro della scena si trovano due oggetti di tipo mesh (file OBJ), adeguatamente texturizzati. L'applicazione delle texture è stata effettuata tramite Blender 4.0\. Gli oggetti sono stati texturizzati con 11 texture diverse (10 tra texture a tinta unita e texture che richiamano lo stile di alcuni materiali e 1 foto dell'autore).
 
 ### Controlli a Disposizione dell'Utente
