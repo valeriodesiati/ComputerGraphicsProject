@@ -32,8 +32,7 @@ var isAnimating = true;
 var then = 0;
 
 //OBJ disponibili, tutti con diverse texture
-const objs = ["Gear_BaseColor.obj", "Gear_blue.obj", "Gear_diffuse.obj", "Gear_foto_mia.obj", "Gear_normal.obj",
-              "Gear_red.obj", "Gear_roughness.obj", "Gear_specular.obj"];
+const objs = ["Gear_BaseColor.obj", "Gear_diffuse.obj", "Gear_foto_mia.obj", "Gear_red.obj", "Gear_roughness.obj"];
                 
 function main() {
     var canvas = document.getElementById("canvas");
